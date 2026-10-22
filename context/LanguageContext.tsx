@@ -17,18 +17,32 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem("aiconcpet_lang") as Language | null;
-    if (saved && (saved === "en" || saved === "ar")) {
-      setLanguageState(saved);
-      document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
-      document.documentElement.lang = saved;
-    } else {
-      // Check browser language
-      const browserLang = navigator.language.startsWith("ar") ? "ar" : "en";
+    // Check URL params first
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlLang = urlParams.get("lang") as Language | null;
+
+      if (urlLang === "ar" || urlLang === "en") {
+        setLanguageState(urlLang);
+        document.documentElement.dir = urlLang === "ar" ? "rtl" : "ltr";
+        document.documentElement.lang = urlLang;
+        localStorage.setItem("aiconcpet_lang", urlLang);
+        return;
+      }
+
+      // Check localStorage
+      const saved = localStorage.getItem("aiconcpet_lang") as Language | null;
+      if (saved === "ar" || saved === "en") {
+        setLanguageState(saved);
+        document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
+        document.documentElement.lang = saved;
+        return;
+      }
+
+      // Default to Arabic if browser is Arabic, otherwise English
+      const browserLang = navigator.language?.toLowerCase().startsWith("ar") ? "ar" : "en";
       setLanguageState(browserLang);
       document.documentElement.dir = browserLang === "ar" ? "rtl" : "ltr";
       document.documentElement.lang = browserLang;
@@ -45,10 +59,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const toggleLanguage = () => {
-    setLanguage(language === "en" ? "ar" : "en");
+    const nextLang = language === "en" ? "ar" : "en";
+    setLanguage(nextLang);
   };
 
-  const t = translations[language] as TranslationType;
+  const t = (translations[language] || translations.en) as TranslationType;
   const isRTL = language === "ar";
 
   return (
@@ -61,7 +76,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         isRTL,
       }}
     >
-      <div className={isRTL ? "font-arabic" : ""}>
+      <div key={language} dir={isRTL ? "rtl" : "ltr"} className={isRTL ? "font-arabic" : ""}>
         {children}
       </div>
     </LanguageContext.Provider>
