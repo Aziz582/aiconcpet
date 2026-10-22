@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import confetti from "canvas-confetti";
 import {
   ArrowRight,
+  ArrowLeft,
   Sparkles,
   Bot,
   ShieldCheck,
@@ -14,20 +15,23 @@ import {
   Layers,
   Flame,
   Check,
-  Copy,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const [subscriberCount, setSubscriberCount] = useState(1482);
+  const { t, isRTL } = useLanguage();
+
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       setStatus("error");
-      setMessage("Please enter a valid email address.");
+      setMessage(isRTL ? "يرجى إدخال عنوان بريد إلكتروني صالح." : "Please enter a valid email address.");
       return;
     }
 
@@ -45,12 +49,15 @@ export default function Hero() {
 
       if (res.ok) {
         setStatus("success");
-        setMessage(data.message || "You're confirmed for early access tier!");
+        setMessage(
+          data.alreadySubscribed
+            ? t.hero.alreadySubscribed
+            : (t.hero.successMessage || data.message)
+        );
         if (data.count) {
           setSubscriberCount(data.count);
         }
 
-        // Fire festive celebration confetti
         try {
           confetti({
             particleCount: 80,
@@ -59,15 +66,15 @@ export default function Hero() {
             colors: ["#00F2FE", "#4FACFE", "#ffffff", "#38bdf8"],
           });
         } catch {
-          // ignore in environments without canvas
+          // ignore
         }
       } else {
         setStatus("error");
-        setMessage(data.error || "Something went wrong. Please retry.");
+        setMessage(data.error || (isRTL ? "حدث خطأ ما. يرجى المحاولة ثانية." : "Something went wrong. Please retry."));
       }
     } catch {
       setStatus("error");
-      setMessage("Network error. Could not connect to early access service.");
+      setMessage(isRTL ? "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت." : "Network error. Could not connect to early access service.");
     }
   };
 
@@ -83,29 +90,29 @@ export default function Hero() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#0E1424]/90 border border-white/10 hover:border-[#00F2FE]/40 shadow-[0_0_20px_rgba(0,242,254,0.1)] transition-all duration-300 mb-8 cursor-default group max-w-[92vw] sm:max-w-none">
             <span className="flex h-2 w-2 relative shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00F2FE] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00F2FE]"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2 bg-[#00F2FE]"></span>
             </span>
             <span className="text-[11px] sm:text-sm font-medium text-slate-200 truncate sm:overflow-visible">
-              🚀 The Next Evolution in AI Business Infrastructure
+              {t.hero.announcement}
             </span>
             <div className="w-px h-3 bg-white/20 hidden sm:block" />
-            <span className="text-xs font-semibold text-[#00F2FE] hidden sm:inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-              Join Wave 1 <ArrowRight className="w-3 h-3" />
+            <span className="text-xs font-semibold text-[#00F2FE] hidden sm:inline-flex items-center gap-1 group-hover:scale-105 transition-transform">
+              <span>{t.hero.joinWave}</span>
+              <ArrowIcon className="w-3 h-3" />
             </span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.15] sm:leading-[1.15] mb-6">
-            Power Any Business Idea with{" "}
+          <h1 className="text-3xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.2] sm:leading-[1.15] mb-6">
+            {t.hero.titlePart1}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00F2FE] via-[#38BDF8] to-[#4FACFE] drop-shadow-[0_0_35px_rgba(0,242,254,0.3)]">
-              Autonomous AI
+              {t.hero.titleHighlight}
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg sm:text-xl text-slate-300/90 leading-relaxed font-normal max-w-2xl mx-auto mb-10">
-            AI Concept is building an end-to-end intelligence ecosystem. Automate workflows, deploy
-            specialized AI agents, and transform raw concepts into scalable operations.
+          <p className="text-base sm:text-xl text-slate-300/90 leading-relaxed font-normal max-w-2xl mx-auto mb-10">
+            {t.hero.subtitle}
           </p>
 
           {/* Lead Capture Form */}
@@ -114,13 +121,13 @@ export default function Hero() {
               onSubmit={handleSubmit}
               className="relative flex flex-col sm:flex-row items-center p-2 rounded-2xl bg-[#0E1424]/90 border border-white/15 focus-within:border-[#00F2FE]/60 focus-within:shadow-[0_0_30px_rgba(0,242,254,0.25)] transition-all duration-300 gap-2 backdrop-blur-xl shadow-2xl"
             >
-              <div className="flex items-center flex-1 w-full pl-3 pr-2">
-                <Sparkles className="w-5 h-5 text-slate-400 shrink-0 mr-2" />
+              <div className="flex items-center flex-1 w-full px-3">
+                <Sparkles className="w-5 h-5 text-slate-400 shrink-0 mx-1" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your business email..."
+                  placeholder={t.hero.placeholder}
                   required
                   disabled={status === "loading" || status === "success"}
                   className="w-full bg-transparent text-sm sm:text-base text-white placeholder-slate-400 focus:outline-none disabled:opacity-50 py-2.5"
@@ -135,17 +142,17 @@ export default function Hero() {
                 {status === "loading" ? (
                   <>
                     <Activity className="w-4 h-4 animate-spin text-[#070A11]" />
-                    <span>Securing Spot...</span>
+                    <span>{t.hero.loadingButton}</span>
                   </>
                 ) : status === "success" ? (
                   <>
                     <CheckCircle2 className="w-4 h-4 text-[#070A11]" />
-                    <span>Access Granted!</span>
+                    <span>{t.hero.successButton}</span>
                   </>
                 ) : (
                   <>
-                    <span>Request Early Access</span>
-                    <ArrowRight className="w-4 h-4 text-[#070A11]" />
+                    <span>{t.hero.requestButton}</span>
+                    <ArrowIcon className="w-4 h-4 text-[#070A11]" />
                   </>
                 )}
               </button>
@@ -183,7 +190,7 @@ export default function Hero() {
                 </span>
               </span>
               <span>
-                <strong className="text-white font-semibold">{subscriberCount.toLocaleString()}+</strong> founders & creators on the waitlist
+                <strong className="text-white font-semibold">{subscriberCount.toLocaleString()}+</strong> {t.hero.socialProof}
               </span>
             </div>
           </div>
@@ -191,38 +198,38 @@ export default function Hero() {
           {/* Trust / Capabilities Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mt-6 pt-8 border-t border-white/10">
             <div className="flex items-center justify-center sm:justify-start gap-3 p-3 rounded-xl bg-[#0E1424]/40 border border-white/5">
-              <div className="p-2 rounded-lg bg-[#00F2FE]/10 text-[#00F2FE]">
+              <div className="p-2 rounded-lg bg-[#00F2FE]/10 text-[#00F2FE] shrink-0">
                 <Layers className="w-4 h-4" />
               </div>
-              <div className="text-left">
-                <p className="text-xs font-semibold text-white">Multi-Model Intelligence</p>
-                <p className="text-[11px] text-slate-400">Gemini, Claude, GPT & Custom</p>
+              <div className={isRTL ? "text-right" : "text-left"}>
+                <p className="text-xs font-semibold text-white">{t.hero.trustPillars.multiModel}</p>
+                <p className="text-[11px] text-slate-400">{t.hero.trustPillars.multiModelDesc}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-center sm:justify-start gap-3 p-3 rounded-xl bg-[#0E1424]/40 border border-white/5">
-              <div className="p-2 rounded-lg bg-[#4FACFE]/10 text-[#4FACFE]">
+              <div className="p-2 rounded-lg bg-[#4FACFE]/10 text-[#4FACFE] shrink-0">
                 <Zap className="w-4 h-4" />
               </div>
-              <div className="text-left">
-                <p className="text-xs font-semibold text-white">Zero-Code Integration</p>
-                <p className="text-[11px] text-slate-400">Webhooks, SDKs & 1-Click APIs</p>
+              <div className={isRTL ? "text-right" : "text-left"}>
+                <p className="text-xs font-semibold text-white">{t.hero.trustPillars.zeroCode}</p>
+                <p className="text-[11px] text-slate-400">{t.hero.trustPillars.zeroCodeDesc}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-center sm:justify-start gap-3 p-3 rounded-xl bg-[#0E1424]/40 border border-white/5">
-              <div className="p-2 rounded-lg bg-emerald-400/10 text-emerald-400">
+              <div className="p-2 rounded-lg bg-emerald-400/10 text-emerald-400 shrink-0">
                 <ShieldCheck className="w-4 h-4" />
               </div>
-              <div className="text-left">
-                <p className="text-xs font-semibold text-white">Secure & Sandboxed</p>
-                <p className="text-[11px] text-slate-400">Isolated VPC & Zero Data Retention</p>
+              <div className={isRTL ? "text-right" : "text-left"}>
+                <p className="text-xs font-semibold text-white">{t.hero.trustPillars.secure}</p>
+                <p className="text-[11px] text-slate-400">{t.hero.trustPillars.secureDesc}</p>
               </div>
             </div>
           </div>
 
           {/* Interactive Agent Terminal Simulation Widget */}
-          <div className="w-full max-w-4xl mt-14 rounded-2xl bg-[#0E1424]/95 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden text-left relative group hover:border-[#00F2FE]/30 transition-all duration-300">
+          <div className="w-full max-w-4xl mt-14 rounded-2xl bg-[#0E1424]/95 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden relative group hover:border-[#00F2FE]/30 transition-all duration-300 text-left dir-ltr" dir="ltr">
             {/* Window chrome header */}
             <div className="flex items-center justify-between px-4 py-3 bg-[#0B101D] border-b border-white/10">
               <div className="flex items-center gap-2">
@@ -231,13 +238,13 @@ export default function Hero() {
                 <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                 <span className="text-xs text-slate-400 font-mono ml-2 flex items-center gap-1.5">
                   <Terminal className="w-3.5 h-3.5 text-[#00F2FE]" />
-                  aiconcept-agent-orchestrator --active
+                  {t.hero.terminal.header}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Online: 99.99%
+                  {t.hero.terminal.online}
                 </span>
               </div>
             </div>
@@ -247,39 +254,39 @@ export default function Hero() {
               <div className="flex items-start gap-3 text-slate-400">
                 <span className="text-[#00F2FE] select-none font-bold">›</span>
                 <p>
-                  <span className="text-slate-100 font-semibold">User Prompt:</span>{" "}
-                  &quot;Scaffold a fully autonomous customer onboarding & intelligence pipeline for our SaaS.&quot;
+                  <span className="text-slate-100 font-semibold">{t.hero.terminal.promptLabel}</span>{" "}
+                  {t.hero.terminal.promptText}
                 </p>
               </div>
 
               <div className="space-y-2.5 pl-4 border-l-2 border-[#00F2FE]/30 py-1">
                 <div className="flex items-center gap-2 text-slate-300">
                   <Check className="w-3.5 h-3.5 text-[#00F2FE] shrink-0" />
-                  <span>Synthesizing multi-agent topology: LeadQualifyAgent + DataEnrichAgent</span>
+                  <span>{t.hero.terminal.step1}</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-300">
                   <Check className="w-3.5 h-3.5 text-[#00F2FE] shrink-0" />
-                  <span>Configured sandboxed toolchains: CRM sync, Slack webhook, Stripe billing</span>
+                  <span>{t.hero.terminal.step2}</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-300">
                   <Check className="w-3.5 h-3.5 text-[#00F2FE] shrink-0" />
-                  <span>Real-time response SLA: <strong className="text-emerald-400 font-bold">&lt;38ms</strong></span>
+                  <span>{t.hero.terminal.step3}</span>
                 </div>
                 <div className="flex items-center gap-2 text-cyan-300">
                   <Sparkles className="w-3.5 h-3.5 text-[#00F2FE] animate-spin shrink-0" />
-                  <span>Autonomous deployment live at <span className="underline text-white font-semibold">agent.aiconcpet.com/prod/onboarding</span></span>
+                  <span>{t.hero.terminal.step4}</span>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/5 text-[11px] text-slate-400">
                 <div className="flex items-center gap-4">
                   <span>RAM: <strong>1.2 GB</strong></span>
-                  <span>Tokens/Sec: <strong className="text-cyan-400">142 t/s</strong></span>
-                  <span>Safety Guardrails: <strong className="text-emerald-400">Active</strong></span>
+                  <span>Tokens/Sec: <strong className="text-cyan-400">{t.hero.terminal.tokensSec}</strong></span>
+                  <span>Guardrails: <strong className="text-emerald-400">{t.hero.terminal.guardrails}</strong></span>
                 </div>
                 <div className="text-[#00F2FE] font-mono flex items-center gap-1.5">
                   <Bot className="w-3.5 h-3.5" />
-                  <span>Ready for execution</span>
+                  <span>{t.hero.terminal.ready}</span>
                 </div>
               </div>
             </div>

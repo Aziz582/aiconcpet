@@ -1,77 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
-  Sparkles,
-  Calendar,
-  Layers,
   ArrowRight,
+  ArrowLeft,
   Megaphone,
   Briefcase,
   TrendingUp,
   Boxes,
-  Lock,
-  ChevronRight,
   Clock,
   Compass,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function FutureServices() {
-  const [selectedService, setSelectedService] = useState<number | null>(null);
+  const { t, isRTL } = useLanguage();
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
-  const services = [
-    {
-      id: 1,
-      title: "Custom Industry Agents",
-      subtitle: "Real Estate, Commerce & Professional Services",
-      quarter: "Q3 2026",
-      status: "Private Alpha",
-      statusColor: "text-[#00F2FE] bg-[#00F2FE]/10 border-[#00F2FE]/25",
-      icon: Briefcase,
-      description:
-        "Deeply specialized vertical agents pre-loaded with industry terminology, regulatory compliance rules, and automated execution workflows.",
-      features: [
-        "Real Estate: Property valuation, automated listing generation, and contract redlining",
-        "Commerce: Dynamic inventory replenishment, competitor pricing monitoring, and hyper-targeted retention",
-        "Professional Services: Automated client intake, document verification, and milestone billing",
-      ],
-      progress: "85%",
-    },
-    {
-      id: 2,
-      title: "Automated Content & Marketing Engines",
-      subtitle: "Multi-Channel Generative Campaign Orchestration",
-      quarter: "Q4 2026",
-      status: "In Development",
-      statusColor: "text-[#4FACFE] bg-[#4FACFE]/10 border-[#4FACFE]/25",
-      icon: Megaphone,
-      description:
-        "Autonomous marketing systems that analyze performance metrics in real-time, generate personalized visual/copy assets, and orchestrate omnichannel distribution.",
-      features: [
-        "Autonomous A/B testing with continuous visual & copy self-optimization",
-        "Brand voice fine-tuning from existing pitch decks, blogs, and manuals",
-        "One-click multi-platform publishing (LinkedIn, X, YouTube, newsletters)",
-      ],
-      progress: "60%",
-    },
-    {
-      id: 3,
-      title: "Business Intelligence & Smart Workflows",
-      subtitle: "Predictive Analytics & Real-Time Executive Briefings",
-      quarter: "Q1 2027",
-      status: "Design Phase",
-      statusColor: "text-amber-400 bg-amber-400/10 border-amber-400/25",
-      icon: TrendingUp,
-      description:
-        "Autonomous BI synthesizers that monitor company databases, detect revenue anomalies before humans notice, and execute mitigation workflows automatically.",
-      features: [
-        "Natural language executive querying over petabyte-scale data lakes",
-        "Autonomous anomaly intervention (e.g. churn flags trigger retention incentives)",
-        "Automated daily C-level podcast and markdown intelligence summaries",
-      ],
-      progress: "35%",
-    },
-  ];
+  const iconMap = {
+    1: Briefcase,
+    2: Megaphone,
+    3: TrendingUp,
+  };
+
+  const statusColors: Record<number, string> = {
+    1: "text-[#00F2FE] bg-[#00F2FE]/10 border-[#00F2FE]/25",
+    2: "text-[#4FACFE] bg-[#4FACFE]/10 border-[#4FACFE]/25",
+    3: "text-amber-400 bg-amber-400/10 border-amber-400/25",
+  };
 
   return (
     <section id="services" className="py-24 md:py-32 relative bg-[#070A11]/90 border-t border-white/5">
@@ -83,21 +39,21 @@ export default function FutureServices() {
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4FACFE]/10 border border-[#4FACFE]/25 text-[#4FACFE] text-xs font-semibold uppercase tracking-wider mb-4">
             <Boxes className="w-3.5 h-3.5" />
-            Coming Soon - Modular AI Services
+            {t.roadmap.badge}
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-            The Roadmap to Complete Autonomy
+            {t.roadmap.title}
           </h2>
           <p className="text-base sm:text-lg text-slate-400">
-            Modular, plug-and-play AI modules currently in active pipeline engineering. Reserve early access to test them first.
+            {t.roadmap.subtitle}
           </p>
         </div>
 
         {/* Roadmap Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {services.map((service, index) => {
-            const Icon = service.icon;
-            const isExpanded = selectedService === service.id;
+          {t.roadmap.services.map((service) => {
+            const Icon = iconMap[service.id as keyof typeof iconMap] || Briefcase;
+            const colorClass = statusColors[service.id] || "text-[#00F2FE] bg-[#00F2FE]/10 border-[#00F2FE]/25";
 
             return (
               <div
@@ -112,7 +68,7 @@ export default function FutureServices() {
                       {service.quarter}
                     </span>
                     <span
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${service.statusColor}`}
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${colorClass}`}
                     >
                       {service.status}
                     </span>
@@ -151,7 +107,7 @@ export default function FutureServices() {
                 <div>
                   <div className="mb-4">
                     <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1.5">
-                      <span>Development Readiness</span>
+                      <span>{t.roadmap.readiness}</span>
                       <span className="text-white font-semibold">{service.progress}</span>
                     </div>
                     <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
@@ -166,8 +122,8 @@ export default function FutureServices() {
                     href="#waitlist"
                     className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-200 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#00F2FE]/30 transition-all cursor-pointer"
                   >
-                    <span>Request Priority Whitelist</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#00F2FE]" />
+                    <span>{t.roadmap.requestWhitelist}</span>
+                    <ArrowIcon className="w-3.5 h-3.5 text-[#00F2FE]" />
                   </a>
                 </div>
               </div>
@@ -183,10 +139,10 @@ export default function FutureServices() {
             </div>
             <div>
               <h4 className="text-base font-bold text-white">
-                Have a proprietary workflow you need autonomously automated?
+                {t.roadmap.customInquiryTitle}
               </h4>
               <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-                We build dedicated, private fine-tuned model agents for early access enterprise partners.
+                {t.roadmap.customInquirySubtitle}
               </p>
             </div>
           </div>
@@ -195,7 +151,7 @@ export default function FutureServices() {
             href="#waitlist"
             className="shrink-0 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-[#070A11] bg-white hover:bg-slate-200 transition-colors shadow-md"
           >
-            Inquire for Enterprise Agent
+            {t.roadmap.customInquiryButton}
           </a>
         </div>
       </div>

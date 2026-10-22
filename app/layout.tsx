@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Concept — Power Any Business Idea with Autonomous AI",
-  description: "AI Concept is building an end-to-end intelligence ecosystem. Automate workflows, deploy specialized AI agents, and transform raw concepts into scalable operations.",
-  keywords: ["AI Concept", "autonomous AI agents", "smart automation", "business AI infrastructure", "AI workflow automation"],
+  title: "AI Concept — Power Any Business Idea with Autonomous AI | منصة الذكاء الاصطناعي المستقل",
+  description: "AI Concept is building an end-to-end intelligence ecosystem. Automate workflows, deploy specialized AI agents, and transform raw concepts into scalable operations. تمكين الأعمال بأحدث أنظمة الذكاء الاصطناعي المستقل.",
+  keywords: ["AI Concept", "autonomous AI agents", "smart automation", "business AI infrastructure", "AI workflow automation", "ذكاء اصطناعي", "أتمتة الأعمال"],
   authors: [{ name: "AI Concept Team", url: "https://aiconcpet.com" }],
   openGraph: {
     title: "AI Concept — Power Any Business Idea with Autonomous AI",
@@ -35,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <body className="min-h-screen bg-[#070A11] text-slate-100 antialiased selection:bg-[#00F2FE]/30 selection:text-[#00F2FE]">
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

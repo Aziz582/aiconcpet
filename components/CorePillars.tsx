@@ -7,54 +7,25 @@ import {
   Workflow,
   Network,
   Shield,
-  Zap,
-  ArrowUpRight,
-  Database,
+  Sparkles,
   Lock,
   Globe,
-  Sliders,
-  Sparkles,
-  BarChart3,
   CheckCircle,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CorePillars() {
   const [activeAgentTab, setActiveAgentTab] = useState<"support" | "code" | "sales" | "finance">("support");
-  const [activeIndustry, setActiveIndustry] = useState<string>("SaaS & Tech");
+  const { t, isRTL } = useLanguage();
 
-  const agentTabs = {
-    support: {
-      title: "Omnichannel Support Agent",
-      desc: "Resolves 84% of tier-1 customer inquiries autonomously across email, chat, and tickets in seconds.",
-      metric: "0.4s avg response",
-      tools: ["Zendesk", "Slack", "PostgreSQL", "Notion"],
-    },
-    code: {
-      title: "Self-Healing Code Auditor",
-      desc: "Continuously scans PRs, identifies performance bottlenecks, writes regression tests, and flags security flaws.",
-      metric: "99.4% precision",
-      tools: ["GitHub", "GitLab", "Docker", "Sentry"],
-    },
-    sales: {
-      title: "Autonomous Outbound Pipeline",
-      desc: "Conducts deep prospect research, drafts hyper-personalized proposals, and schedules qualification calls.",
-      metric: "3.2x meeting rate",
-      tools: ["HubSpot", "LinkedIn", "Apollo", "Google Meet"],
-    },
-    finance: {
-      title: "Real-Time Financial Forecaster",
-      desc: "Aggregates transactions, reconciles cross-border accounts, and generates dynamic cashflow runout projections.",
-      metric: "Zero manual audit",
-      tools: ["Stripe", "QuickBooks", "Plaid", "Snowflake"],
-    },
+  const agentTools = {
+    support: ["Zendesk", "Slack", "PostgreSQL", "Notion"],
+    code: ["GitHub", "GitLab", "Docker", "Sentry"],
+    sales: ["HubSpot", "LinkedIn", "Apollo", "Google Meet"],
+    finance: ["Stripe", "QuickBooks", "Plaid", "Snowflake"],
   };
 
-  const industries = [
-    { name: "SaaS & Tech", desc: "Automate user onboarding, churn prediction, and telemetry analytics." },
-    { name: "E-Commerce", desc: "Dynamic pricing, AI catalogue tagging, and inventory re-order agents." },
-    { name: "Real Estate", desc: "Instant property valuation, lead qualification, and legal contract analysis." },
-    { name: "Financial Services", desc: "Automated compliance, fraud anomaly detection, and automated reporting." },
-  ];
+  const currentTab = t.pillars.pillar1.tabs[activeAgentTab];
 
   return (
     <section id="platform" className="py-24 md:py-32 relative bg-[#070A11]">
@@ -67,13 +38,13 @@ export default function CorePillars() {
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00F2FE]/10 border border-[#00F2FE]/25 text-[#00F2FE] text-xs font-semibold uppercase tracking-wider mb-4">
             <Cpu className="w-3.5 h-3.5" />
-            Core Platform Architecture
+            {t.pillars.badge}
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
-            Engineered for Autonomous Scale
+            {t.pillars.title}
           </h2>
           <p className="text-base sm:text-lg text-slate-400">
-            Four foundational pillars uniting state-of-the-art cognitive AI with enterprise reliability.
+            {t.pillars.subtitle}
           </p>
         </div>
 
@@ -90,15 +61,15 @@ export default function CorePillars() {
                   <Bot className="w-6 h-6" />
                 </div>
                 <span className="text-xs font-mono font-medium text-slate-400 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                  Pillar 01
+                  {t.pillars.pillar1.number}
                 </span>
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-[#00F2FE] transition-colors">
-                Autonomous AI Agents
+                {t.pillars.pillar1.title}
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed mb-6">
-                Custom virtual assistants trained for your specific workflow. They plan multi-step execution paths, access your tools, and make autonomous decisions with human-in-the-loop oversight.
+                {t.pillars.pillar1.description}
               </p>
 
               {/* Interactive Agent Switcher */}
@@ -113,7 +84,15 @@ export default function CorePillars() {
                         : "bg-white/5 text-slate-400 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    {tab} Agent
+                    {isRTL
+                      ? tab === "support"
+                        ? "الدعم الفني"
+                        : tab === "code"
+                        ? "فحص الكود"
+                        : tab === "sales"
+                        ? "المبيعات"
+                        : "المالية"
+                      : `${tab} Agent`}
                   </button>
                 ))}
               </div>
@@ -122,19 +101,19 @@ export default function CorePillars() {
               <div className="rounded-2xl bg-[#070A11]/80 border border-white/10 p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-semibold text-white">
-                    {agentTabs[activeAgentTab].title}
+                    {currentTab.title}
                   </span>
                   <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                    {agentTabs[activeAgentTab].metric}
+                    {currentTab.metric}
                   </span>
                 </div>
                 <p className="text-xs text-slate-400 leading-normal">
-                  {agentTabs[activeAgentTab].desc}
+                  {currentTab.desc}
                 </p>
                 <div className="pt-2 border-t border-white/5 flex items-center gap-2">
-                  <span className="text-[11px] text-slate-400">Connected Tools:</span>
+                  <span className="text-[11px] text-slate-400">{t.pillars.pillar1.toolsLabel}</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {agentTabs[activeAgentTab].tools.map((tool) => (
+                    {agentTools[activeAgentTab].map((tool) => (
                       <span key={tool} className="text-[10px] font-mono text-slate-300 px-2 py-0.5 rounded bg-white/5 border border-white/5">
                         {tool}
                       </span>
@@ -146,9 +125,9 @@ export default function CorePillars() {
 
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
               <span className="flex items-center gap-1.5 text-[#00F2FE]">
-                <Sparkles className="w-3.5 h-3.5" /> Self-adapting execution memory
+                <Sparkles className="w-3.5 h-3.5" /> {t.pillars.pillar1.footer}
               </span>
-              <span className="font-mono">Ready for deployment</span>
+              <span className="font-mono text-slate-400">{t.pillars.pillar1.status}</span>
             </div>
           </div>
 
@@ -162,25 +141,25 @@ export default function CorePillars() {
                   <Workflow className="w-6 h-6" />
                 </div>
                 <span className="text-xs font-mono font-medium text-slate-400 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                  Pillar 02
+                  {t.pillars.pillar2.number}
                 </span>
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-[#4FACFE] transition-colors">
-                Smart Automation Pipelines
+                {t.pillars.pillar2.title}
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed mb-6">
-                Seamlessly connecting APIs, databases, webhooks, and daily business tasks with zero friction.
+                {t.pillars.pillar2.description}
               </p>
 
               {/* Visual Pipeline Node Diagram */}
               <div className="space-y-2.5">
                 <div className="p-3 rounded-xl bg-[#070A11]/90 border border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-amber-400" />
-                    <span className="text-xs font-mono text-slate-300">1. Trigger: Inbound Event</span>
+                    <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                    <span className="text-xs font-mono text-slate-300">{t.pillars.pillar2.trigger}</span>
                   </div>
-                  <span className="text-[11px] text-slate-400">Webhook / Kafka</span>
+                  <span className="text-[11px] text-slate-400">{t.pillars.pillar2.triggerSub}</span>
                 </div>
 
                 <div className="flex justify-center -my-1">
@@ -189,10 +168,10 @@ export default function CorePillars() {
 
                 <div className="p-3 rounded-xl bg-[#070A11]/90 border border-[#00F2FE]/30 flex items-center justify-between shadow-[0_0_15px_rgba(0,242,254,0.1)]">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-[#00F2FE] animate-ping" />
-                    <span className="text-xs font-mono text-white font-medium">2. AI Decision Engine</span>
+                    <span className="w-2 h-2 rounded-full bg-[#00F2FE] animate-ping shrink-0" />
+                    <span className="text-xs font-mono text-white font-medium">{t.pillars.pillar2.decision}</span>
                   </div>
-                  <span className="text-[11px] text-[#00F2FE] font-mono">14ms latency</span>
+                  <span className="text-[11px] text-[#00F2FE] font-mono">{t.pillars.pillar2.decisionSub}</span>
                 </div>
 
                 <div className="flex justify-center -my-1">
@@ -201,18 +180,18 @@ export default function CorePillars() {
 
                 <div className="p-3 rounded-xl bg-[#070A11]/90 border border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    <span className="text-xs font-mono text-slate-300">3. Action: Scaled Dispatch</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                    <span className="text-xs font-mono text-slate-300">{t.pillars.pillar2.action}</span>
                   </div>
-                  <span className="text-[11px] text-emerald-400">Database + Notify</span>
+                  <span className="text-[11px] text-emerald-400">{t.pillars.pillar2.actionSub}</span>
                 </div>
               </div>
             </div>
 
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
-              <span>Automatic retries & rollback</span>
+              <span>{t.pillars.pillar2.footer}</span>
               <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                <CheckCircle className="w-3.5 h-3.5" /> 100% Reliable
+                <CheckCircle className="w-3.5 h-3.5" /> {t.pillars.pillar2.reliable}
               </span>
             </div>
           </div>
@@ -227,34 +206,33 @@ export default function CorePillars() {
                   <Network className="w-6 h-6" />
                 </div>
                 <span className="text-xs font-mono font-medium text-slate-400 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                  Pillar 03
+                  {t.pillars.pillar3.number}
                 </span>
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-[#00F2FE] transition-colors">
-                Dynamic Intelligence Hub
+                {t.pillars.pillar3.title}
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed mb-6">
-                Adaptive AI models tailored across diverse market sectors. Continuous learning ensures your models evolve alongside your company&apos;s growth.
+                {t.pillars.pillar3.description}
               </p>
 
-              {/* Industry pills */}
+              {/* Industry cards */}
               <div className="space-y-2.5">
-                {industries.map((ind) => (
+                {t.pillars.pillar3.industries.map((ind, i) => (
                   <div
                     key={ind.name}
-                    onClick={() => setActiveIndustry(ind.name)}
-                    className={`p-3 rounded-xl border transition-all cursor-pointer ${
-                      activeIndustry === ind.name
+                    className={`p-3 rounded-xl border transition-all ${
+                      i === 0
                         ? "bg-[#070A11] border-[#00F2FE]/40 shadow-[0_0_15px_rgba(0,242,254,0.1)]"
-                        : "bg-[#070A11]/50 border-white/5 hover:border-white/15"
+                        : "bg-[#070A11]/50 border-white/5"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className={`text-xs font-bold ${activeIndustry === ind.name ? "text-[#00F2FE]" : "text-white"}`}>
+                      <span className={`text-xs font-bold ${i === 0 ? "text-[#00F2FE]" : "text-white"}`}>
                         {ind.name}
                       </span>
-                      <span className="text-[10px] text-slate-400">Tailored Pack</span>
+                      <span className="text-[10px] text-slate-400">{t.pillars.pillar3.tailored}</span>
                     </div>
                     <p className="text-[11px] text-slate-400 mt-1 leading-snug">
                       {ind.desc}
@@ -265,8 +243,8 @@ export default function CorePillars() {
             </div>
 
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
-              <span>Domain fine-tuned weights</span>
-              <span className="text-[#00F2FE] font-medium">Auto-calibrating</span>
+              <span>{t.pillars.pillar3.footer}</span>
+              <span className="text-[#00F2FE] font-medium">{t.pillars.pillar3.status}</span>
             </div>
           </div>
 
@@ -280,41 +258,41 @@ export default function CorePillars() {
                   <Shield className="w-6 h-6" />
                 </div>
                 <span className="text-xs font-mono font-medium text-slate-400 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                  Pillar 04
+                  {t.pillars.pillar4.number}
                 </span>
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
-                Enterprise-Grade Performance
+                {t.pillars.pillar4.title}
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed mb-6">
-                Sub-50ms execution, high-concurrency architecture, and military-grade privacy. Built for mission-critical operations where downtime or leakage is not an option.
+                {t.pillars.pillar4.description}
               </p>
 
               {/* Security & Performance Telemetry Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="p-3 rounded-xl bg-[#070A11]/80 border border-white/10">
-                  <p className="text-[11px] text-slate-400">Inference Speed</p>
-                  <p className="text-xl font-bold text-[#00F2FE] mt-1">&lt;35ms</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">Global edge distribution</p>
+                  <p className="text-[11px] text-slate-400">{t.pillars.pillar4.stat1.label}</p>
+                  <p className="text-xl font-bold text-[#00F2FE] mt-1">{t.pillars.pillar4.stat1.val}</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">{t.pillars.pillar4.stat1.sub}</p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-[#070A11]/80 border border-white/10">
-                  <p className="text-[11px] text-slate-400">SLA Guarantee</p>
-                  <p className="text-xl font-bold text-emerald-400 mt-1">99.99%</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">High-availability cluster</p>
+                  <p className="text-[11px] text-slate-400">{t.pillars.pillar4.stat2.label}</p>
+                  <p className="text-xl font-bold text-emerald-400 mt-1">{t.pillars.pillar4.stat2.val}</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">{t.pillars.pillar4.stat2.sub}</p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-[#070A11]/80 border border-white/10">
-                  <p className="text-[11px] text-slate-400">Privacy Standard</p>
-                  <p className="text-xl font-bold text-[#4FACFE] mt-1">Zero Retain</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">Ephemeral sandbox</p>
+                  <p className="text-[11px] text-slate-400">{t.pillars.pillar4.stat3.label}</p>
+                  <p className="text-xl font-bold text-[#4FACFE] mt-1">{t.pillars.pillar4.stat3.val}</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">{t.pillars.pillar4.stat3.sub}</p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-[#070A11]/80 border border-white/10">
-                  <p className="text-[11px] text-slate-400">Encryption</p>
-                  <p className="text-xl font-bold text-white mt-1">AES-256</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">At rest & in transit</p>
+                  <p className="text-[11px] text-slate-400">{t.pillars.pillar4.stat4.label}</p>
+                  <p className="text-xl font-bold text-white mt-1">{t.pillars.pillar4.stat4.val}</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">{t.pillars.pillar4.stat4.sub}</p>
                 </div>
               </div>
 
@@ -322,21 +300,21 @@ export default function CorePillars() {
               <div className="mt-5 p-3 rounded-xl bg-[#070A11]/60 border border-white/5 flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <Lock className="w-4 h-4 text-emerald-400" />
-                  <span className="text-xs font-medium text-slate-200">Compliance & Guardrails:</span>
+                  <span className="text-xs font-medium text-slate-200">{t.pillars.pillar4.compliance}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 text-[10px] font-mono text-slate-300">
-                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">SOC-2 Type II Ready</span>
+                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">SOC-2 Type II</span>
                   <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">GDPR & HIPAA</span>
-                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">ISO 27001 Aligned</span>
+                  <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">ISO 27001</span>
                 </div>
               </div>
             </div>
 
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
               <span className="flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-slate-400" /> Deployed across 32 global edge regions
+                <Globe className="w-3.5 h-3.5 text-slate-400" /> {t.pillars.pillar4.footer}
               </span>
-              <span className="text-emerald-400 font-mono">Status: Green</span>
+              <span className="text-emerald-400 font-mono">{t.pillars.pillar4.status}</span>
             </div>
           </div>
 

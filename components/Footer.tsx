@@ -2,8 +2,11 @@
 
 import React from "react";
 import { Cpu, ArrowUp, Shield } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
+  const { t, isRTL } = useLanguage();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -24,13 +27,13 @@ export default function Footer() {
             </div>
 
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-              Empowering visionary builders, enterprises, and creators with next-generation autonomous AI architecture. We turn complex workflows into scalable, self-operating systems.
+              {t.footer.mission}
             </p>
 
             {/* System Status Pill */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Systems Operational • 99.99% Uptime</span>
+              <span>{t.footer.uptime}</span>
             </div>
 
             {/* Social Icons (Inline Brand SVGs) */}
@@ -50,7 +53,7 @@ export default function Footer() {
 
               {/* GitHub */}
               <a
-                href="https://github.com"
+                href="https://github.com/Aziz582/aiconcpet"
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 rounded-lg bg-[#0E1424] border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-white/30 transition-all cursor-pointer"
@@ -92,32 +95,32 @@ export default function Footer() {
           {/* Column 1: Platform */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
-              Platform
+              {t.footer.colPlatform}
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  Autonomous AI Agents
+                  {t.footer.links.agents}
                 </a>
               </li>
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  Smart Pipelines
+                  {t.footer.links.pipelines}
                 </a>
               </li>
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  Dynamic Intelligence Hub
+                  {t.footer.links.hub}
                 </a>
               </li>
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  Enterprise Infrastructure
+                  {t.footer.links.enterprise}
                 </a>
               </li>
               <li>
                 <a href="#services" className="hover:text-white transition-colors">
-                  Roadmap & Services
+                  {t.footer.links.roadmap}
                 </a>
               </li>
             </ul>
@@ -126,32 +129,32 @@ export default function Footer() {
           {/* Column 2: Solutions */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
-              Solutions
+              {t.footer.colSolutions}
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  SaaS & Technology
+                  {t.footer.links.tech}
                 </a>
               </li>
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  E-Commerce Automation
+                  {t.footer.links.ecommerce}
                 </a>
               </li>
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  Real Estate Valuation
+                  {t.footer.links.realestate}
                 </a>
               </li>
               <li>
                 <a href="#platform" className="hover:text-white transition-colors">
-                  Financial Forecasting
+                  {t.footer.links.finance}
                 </a>
               </li>
               <li>
                 <a href="#waitlist" className="hover:text-white transition-colors">
-                  Custom Industry Pack
+                  {t.footer.links.customPack}
                 </a>
               </li>
             </ul>
@@ -160,33 +163,33 @@ export default function Footer() {
           {/* Column 3: Trust & Legal */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
-              Trust & Legal
+              {t.footer.colTrust}
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
                 <a href="#waitlist" className="hover:text-white transition-colors flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-emerald-400" />
-                  Security Whitepaper
+                  {t.footer.links.security}
                 </a>
               </li>
               <li>
                 <a href="#about" className="hover:text-white transition-colors">
-                  About AI Concept
+                  {t.footer.links.about}
                 </a>
               </li>
               <li>
                 <a href="#about" className="hover:text-white transition-colors">
-                  Privacy Policy
+                  {t.footer.links.privacy}
                 </a>
               </li>
               <li>
                 <a href="#about" className="hover:text-white transition-colors">
-                  Terms of Service
+                  {t.footer.links.terms}
                 </a>
               </li>
               <li>
                 <span className="inline-block px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  SOC-2 Aligned
+                  {t.footer.links.soc2}
                 </span>
               </li>
             </ul>
@@ -195,13 +198,13 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© 2026 AI Concept (aiconcpet.com). All rights reserved.</p>
+          <p>{t.footer.copyright}</p>
 
           <button
             onClick={scrollToTop}
             className="flex items-center gap-2 hover:text-white transition-colors p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 cursor-pointer"
           >
-            <span>Back to top</span>
+            <span>{t.footer.backToTop}</span>
             <ArrowUp className="w-3.5 h-3.5 text-[#00F2FE]" />
           </button>
         </div>

@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 import {
   Sparkles,
   ArrowRight,
+  ArrowLeft,
   CheckCircle2,
   Lock,
   Gift,
@@ -13,17 +14,21 @@ import {
   Activity,
   Flame,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function WaitlistCTA() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const { t, isRTL } = useLanguage();
+
+  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       setStatus("error");
-      setMessage("Please enter a valid email address.");
+      setMessage(isRTL ? "يرجى إدخال عنوان بريد إلكتروني صالح." : "Please enter a valid email address.");
       return;
     }
 
@@ -41,7 +46,11 @@ export default function WaitlistCTA() {
 
       if (res.ok) {
         setStatus("success");
-        setMessage(data.message || "VIP Spot Reserved! Check your inbox soon.");
+        setMessage(
+          data.alreadySubscribed
+            ? t.hero.alreadySubscribed
+            : (t.hero.successMessage || data.message)
+        );
 
         try {
           confetti({
@@ -55,11 +64,11 @@ export default function WaitlistCTA() {
         }
       } else {
         setStatus("error");
-        setMessage(data.error || "Submission error. Please retry.");
+        setMessage(data.error || (isRTL ? "حدث خطأ ما. يرجى المحاولة ثانية." : "Submission error. Please retry."));
       }
     } catch {
       setStatus("error");
-      setMessage("Network error. Could not connect to early access service.");
+      setMessage(isRTL ? "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت." : "Network error. Could not connect to early access service.");
     }
   };
 
@@ -77,20 +86,20 @@ export default function WaitlistCTA() {
             {/* Urgency Pill */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00F2FE]/10 border border-[#00F2FE]/30 text-[#00F2FE] text-xs font-semibold mb-6">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Wave 1 Founding Access • Limited Slots</span>
+              <span>{t.waitlist.urgency}</span>
             </div>
 
             {/* Headline */}
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4 max-w-3xl leading-[1.15]">
-              Be the First to Deploy{" "}
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4 max-w-3xl leading-[1.2] sm:leading-[1.15]">
+              {t.waitlist.titlePart1}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00F2FE] to-[#4FACFE]">
-                Autonomous Intelligence
+                {t.waitlist.titleHighlight}
               </span>
             </h2>
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-10">
-              Join visionary founders, engineers, and creators building the future of automated operations on AI Concept.
+              {t.waitlist.subtitle}
             </p>
 
             {/* Early Tier Perks */}
@@ -99,10 +108,10 @@ export default function WaitlistCTA() {
                 <div className="p-2 rounded-xl bg-[#00F2FE]/10 text-[#00F2FE] shrink-0 mt-0.5">
                   <Zap className="w-4 h-4" />
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">Tier 1 Priority API</h4>
+                <div className={isRTL ? "text-right" : "text-left"}>
+                  <h4 className="text-xs font-bold text-white">{t.waitlist.perk1Title}</h4>
                   <p className="text-[11px] text-slate-400 mt-1 leading-snug">
-                    Zero-waitlist instant provisioning for production models.
+                    {t.waitlist.perk1Desc}
                   </p>
                 </div>
               </div>
@@ -111,10 +120,10 @@ export default function WaitlistCTA() {
                 <div className="p-2 rounded-xl bg-[#4FACFE]/10 text-[#4FACFE] shrink-0 mt-0.5">
                   <Gift className="w-4 h-4" />
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">50% Lifetime Tier</h4>
+                <div className={isRTL ? "text-right" : "text-left"}>
+                  <h4 className="text-xs font-bold text-white">{t.waitlist.perk2Title}</h4>
                   <p className="text-[11px] text-slate-400 mt-1 leading-snug">
-                    Locked-in discount across all autonomous compute engines.
+                    {t.waitlist.perk2Desc}
                   </p>
                 </div>
               </div>
@@ -123,10 +132,10 @@ export default function WaitlistCTA() {
                 <div className="p-2 rounded-xl bg-emerald-400/10 text-emerald-400 shrink-0 mt-0.5">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">Direct Concierge</h4>
+                <div className={isRTL ? "text-right" : "text-left"}>
+                  <h4 className="text-xs font-bold text-white">{t.waitlist.perk3Title}</h4>
                   <p className="text-[11px] text-slate-400 mt-1 leading-snug">
-                    Dedicated Slack architecture channel with core AI engineers.
+                    {t.waitlist.perk3Desc}
                   </p>
                 </div>
               </div>
@@ -142,7 +151,7 @@ export default function WaitlistCTA() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address..."
+                  placeholder={t.waitlist.placeholder}
                   required
                   disabled={status === "loading" || status === "success"}
                   className="w-full px-4 py-3 bg-transparent text-sm text-white placeholder-slate-400 focus:outline-none disabled:opacity-50"
@@ -156,17 +165,17 @@ export default function WaitlistCTA() {
                   {status === "loading" ? (
                     <>
                       <Activity className="w-4 h-4 animate-spin" />
-                      <span>Reserving...</span>
+                      <span>{t.waitlist.reservingButton}</span>
                     </>
                   ) : status === "success" ? (
                     <>
                       <CheckCircle2 className="w-4 h-4" />
-                      <span>Claimed!</span>
+                      <span>{t.waitlist.claimedButton}</span>
                     </>
                   ) : (
                     <>
-                      <span>Claim Your Spot</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <span>{t.waitlist.claimButton}</span>
+                      <ArrowIcon className="w-4 h-4" />
                     </>
                   )}
                 </button>
@@ -191,7 +200,7 @@ export default function WaitlistCTA() {
 
               <p className="text-[11px] text-slate-400 mt-4 flex items-center justify-center gap-2">
                 <Lock className="w-3.5 h-3.5 text-slate-400" />
-                No spam. Unsubscribe anytime. Strictly zero data selling.
+                {t.waitlist.disclaimer}
               </p>
             </div>
           </div>

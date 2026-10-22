@@ -28,6 +28,12 @@ body {
   overflow-x: hidden;
 }
 
+html[lang="ar"],
+html[dir="rtl"],
+html[dir="rtl"] body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Cairo", "Almarai", "Tajawal", "Noto Sans Arabic", sans-serif;
+}
+
 /* Custom glow and mesh utilities */
 .glow-cyan {
   box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
